@@ -144,10 +144,17 @@ def product_url(page_url, driver_path):
             break
 
     try:
+        pickle.dump(driver.page_source , open( "page_source_1", "wb" ) )
         product_urls = [(i.get_attribute('href')).split("?", 1)[0] for i in driver.find_elements_by_xpath('.//div[@class="product-tile"]//a')]
     except AttributeError:
-        time.sleep(15) 
-        product_urls = [(i.get_attribute('href')).split("?", 1)[0] for i in driver.find_elements_by_xpath('.//div[@class="product-tile"]//a')]
+        try:
+            time.sleep(15) 
+            pickle.dump(driver.page_source , open( "page_source_2", "wb" ) )
+            product_urls = [(i.get_attribute('href')).split("?", 1)[0] for i in driver.find_elements_by_xpath('.//div[@class="product-tile"]//a')]
+        except AttributeError: 
+            time.sleep(15) 
+            pickle.dump(driver.page_source , open( "page_source_3", "wb" ) )
+            product_urls = [(i.get_attribute('href')).split("?", 1)[0] for i in driver.find_elements_by_xpath('.//div[@class="product-tile"]//a')]
 
     product_urls = list(dict.fromkeys(product_urls))
 
@@ -190,7 +197,9 @@ def main():
     w_shorts = 'https://shop.lululemon.com/c/women-shorts/_/N-7we'
     w_tops = 'https://shop.lululemon.com/c/women-maintops/_/N-815'
 
-    page_url_list = [w_leggings, w_hoodies, w_shorts, w_tops]
+    w_all = 'https://shop.lululemon.com/c/women/_/N-7vf'
+
+    page_url_list = [w_all]
     
     driver_path = '/Users/tracynguyen/Applications/chromedriver'
 
@@ -211,7 +220,7 @@ def main():
         dfs.append(merge_df)
 
     final_df = pd.concat(dfs, ignore_index=True)
-    pickle.dump(final_df, open( "20210125_leggings_hoodies_shorts", "wb" ) )
+    pickle.dump(final_df, open( "20210127_women_all", "wb" ) )
 
 
 if __name__=="__main__":
